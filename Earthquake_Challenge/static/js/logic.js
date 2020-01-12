@@ -22,19 +22,29 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 	accessToken: API_KEY
 });
 
+// We create the tile layer that will be the background of our map.
+let dark = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
+	maxZoom: 18,
+	accessToken: API_KEY
+});
+
 // Create a base layer that holds both maps.
 let baseMaps = {
 	"Streets": streets,
-	"Satellite": satelliteStreets
+	"Satellite": satelliteStreets,
+	"Dark": dark 
   };
 
-// Create the earthquake layer for our map.
+// Create the earthquake & tectonic layer for our map.
 let earthquakes = new L.LayerGroup();
+let tectonic = new L.LayerGroup();
 
 // We define an object that contains the overlays.
 // This overlay will be visible all the time.
 let overlays = {
-	Earthquakes: earthquakes
+	Earthquakes: earthquakes,
+	Tectonic: tectonic
 };
 
 // Create the map object with a center (Middle of US) and zoom level (0-18).
@@ -75,8 +85,9 @@ legend.onAdd = function () {
 
 legend.addTo(map);
 
-// Earthquake Data
+// GeoJSON Data
 let earthquakeData = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
+let tectonicData = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
 
 // This function returns the style data for each of the earthquakes we plot on the map.
 // We pass the magnitude of the earthquake into two separate functions to calculate the color and radius.
@@ -90,7 +101,15 @@ function styleInfo(feature) {
 	  stroke: true,
 	  weight: 0.5
 	};
-  }
+}
+
+// Tectonic Fault Style
+function faultStyle(feature) {
+	return {
+		color: "dodgerblue",
+		weight: 1.5
+	};
+}
 
 // This function determines the radius of the earthquake marker based on its magnitude.
 // Earthquakes with a magnitude of 0 will be plotted with a radius of 1.
@@ -124,11 +143,11 @@ function getColor(magnitude) {
 // Retrieve the earthquake GeoJSON data.
 d3.json(earthquakeData).then(function(data) {
 	// Creating a GeoJSON layer with the retrieved data.
-	console.log("PROCESSING GEO-JSON");
+	console.log("PROCESSING Earthquake Data");
 	L.geoJson(data, {
 		//Each Feature (item in array into circle Marker on map)
 		pointToLayer: function(feature, latlng) {
-			console.log(data);
+			//console.log(data);
 			return L.circleMarker(latlng);
 		},
 		style: styleInfo,	// Set style for each marker
@@ -139,4 +158,16 @@ d3.json(earthquakeData).then(function(data) {
 		}
 	}).addTo(earthquakes);
 	earthquakes.addTo(map);
+});
+
+// Retrieve the tectonic fault lines GeoJSON data.
+d3.json(tectonicData).then(function(data) {
+	// Creating a GeoJSON layer with the retrieved data.
+	console.log("PROCESSING Tectonic Fault Lines");
+	console.log(data);
+	L.geoJson(data, {
+		// Set style for each marker
+		style: faultStyle,	
+	}).addTo(tectonic);
+	tectonic.addTo(map);
 });
