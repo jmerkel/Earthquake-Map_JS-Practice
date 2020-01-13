@@ -1,13 +1,6 @@
 // Add console.log to check to see if our code is working.
 console.log("working");
 
-// https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json
-// Challenge Stuff
-// - Get Tectonic plate (d3/geoJSON)
-// - Style (bright colors)
-// - Third Map style
-// - Plate layer (overlay )
-
 // We create the tile layer that will be the background of our map.
 let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -44,7 +37,7 @@ let tectonic = new L.LayerGroup();
 // This overlay will be visible all the time.
 let overlays = {
 	Earthquakes: earthquakes,
-	Tectonic: tectonic
+	"Tectonic Plates": tectonic
 };
 
 // Create the map object with a center (Middle of US) and zoom level (0-18).
