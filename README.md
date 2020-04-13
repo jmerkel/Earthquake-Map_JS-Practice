@@ -1,5 +1,5 @@
-# jmerkel_Module_13 - Earthquake Challenge
-Earthquake Map
+# Earthquake Map
+### UC Berkeley - Module 13
 
 ### Summary of Challenge
 This challenge was to add additional view options to our Earthquake map. In addition to adding a third map type, we were to add another layer that showed the tectonic plate fault lines. These lines were to be styled in a way to be visible on each map type.
